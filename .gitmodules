@@ -1,0 +1,9 @@
+[submodule "certs"]
+	path = certs
+	url = https://github.com/SojournLabs/certs.git
+[submodule "gcc"]
+	path = gcc
+	url = https://github.com/SojournLabs/gcc
+[submodule "netboot"]
+	path = netboot
+	url = https://github.com/SojournLabs/netboot
