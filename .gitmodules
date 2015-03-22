@@ -7,3 +7,12 @@
 [submodule "netboot"]
 	path = netboot
 	url = https://github.com/SojournLabs/netboot
+[submodule "golang"]
+	path = golang
+	url = https://github.com/SojournLabs/golang.git
+[submodule "senginx"]
+	path = senginx
+	url = https://github.com/SojournLabs/senginx.git
+[submodule "squashfs_tools_docker"]
+	path = squashfs_tools_docker
+	url = https://github.com/SojournLabs/squashfs_tools_docker.git
