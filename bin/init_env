@@ -44,12 +44,22 @@ vol_key() {
 
 export SCRIPT_DIR="$(abs_path "$(dirname $0)")"
 export VAPR_ROOT="${VAPR_ROOT-`pwd`}"
+
+# Set up certificate environment variables.
 export VAPR_CAROOT=${VAPR_CAROOT-"${VAPR_ROOT}"/caroot}
 if [ -d ${VAPR_CAROOT} ]; then
     export VAPR_CERTSTORE=$(abs_path "${VAPR_CERTSTORE-"${VAPR_ROOT}"/caroot/certs}")
+    export VAPR_KEYSTORE=$(abs_path "${VAPR_KEYSTORE-"${VAPR_ROOT}"/caroot/keys}")
 else
     export VAPR_CERTSTORE=$(abs_path "${VAPR_CERTSTORE-"${VAPR_ROOT}"/certs}")
+    export VAPR_KEYSTORE=$(abs_path "${VAPR_CERTSTORE-"${VAPR_ROOT}"/keys}")
 fi
 
-export TLS_KEY_FILE=$(abs_path "${TLS_KEY}")
+if [ -f "${TLS_KEY}" ]; then
+    export TLS_KEY_FILE=$(abs_path "${TLS_KEY}")
+else
+    # Fall back into keystore.
+    export TLS_KEY_FILE=$(abs_path "${VAPR_KEYSTORE}"/"${TLS_KEY}".key)
+fi
+
 export TLS_KEY_NAME=$(basename "${TLS_KEY%.*}")
