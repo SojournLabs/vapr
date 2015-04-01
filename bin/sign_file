@@ -16,20 +16,3 @@ docker run --rm -t -i \
     $(vol_certstore) \
     $(vol_key codesign) \
     sojournlabs/caroot sign "$(basename "${1}")"
-
-exit 1
-FILENAME=\"$1\"
-RELDIR=`pwd`
-if [[ -z \"\${FILENAME}\" ]]; then
-    echo Usage:
-    echo $0 file_to_sign
-    exit 1
-fi
-
-cd disk\${RELDIR}
-if [ \${FILENAME:0:1} == "/" ]; then
-    FILENAME=\"\${FILENAME#/}\"
-    cd /vapr/disk
-fi
-openssl cms -inkey /vapr/build/private/codesign.key -sign -binary -noattr -signer /vapr/build/newcerts/codesign.crt -certfile /vapr/build/ca.crt -outform DER -in \${FILENAME} -out \${FILENAME}.sig
-"
