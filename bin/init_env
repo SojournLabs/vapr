@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# A whole bunch of handy-dandy functions and environment variables.
+
+# Source this file.
+abs_path() {
+    if [ -d "${1-.}" ]; then
+        printf '%s' $(cd "$1"; pwd -P)
+    else 
+        abs_path_PATH="$(cd "$(dirname "$1")"; pwd -P)"    
+        printf '%s/%s' "${abs_path_PATH%*/}" "$(basename "$1")"
+    fi
+}
+
+check_key_file() {
+    if [ "${TLS_KEY}" == "" ]; then
+        echo "No key file specified using environment variable TLS_KEY."
+        exit 1
+    fi
+}
+
+check_key_file_paired() {
+    check_key_file
+    if [ ! -f "${VAPR_CERTSTORE}"/"${TLS_KEY_NAME}".crt ] || [ ! -f "${TLS_KEY_FILE}" ] ; then
+        echo "Missing certificate for ${TLS_KEY}."
+        exit 1
+    fi
+}
+
+vol_certstore() {
+    # The Docker string to mount the certificate store in read-only mode.
+    printf '%s %q:/vapr/certstore:ro' -v "${VAPR_CERTSTORE}"
+}
+
+vol_caroot() {
+    # The Docker string to mount the certificate authority root.
+    # Usage: vol_caroot [ro|rw]
+    printf '%s %q:/vapr/caroot:%s' -v "${VAPR_CAROOT}" ${1-ro}
+}
+
+vol_key() {
+    # The Docker string to mount a key in read-only mode.
+    printf '%s %q:/vapr/keys/%q.key:ro' -v "${TLS_KEY_FILE}" "${TLS_KEY_NAME}"
+}
+
+export SCRIPT_DIR="$(abs_path "$(dirname $0)")"
+export VAPR_ROOT="${VAPR_ROOT-`pwd`}"
+export VAPR_CAROOT=${VAPR_CAROOT-"${VAPR_ROOT}"/caroot}
+if [ -d ${VAPR_CAROOT} ]; then
+    export VAPR_CERTSTORE=$(abs_path "${VAPR_CERTSTORE-"${VAPR_ROOT}"/caroot/certs}")
+else
+    export VAPR_CERTSTORE=$(abs_path "${VAPR_CERTSTORE-"${VAPR_ROOT}"/certs}")
+fi
+
+export TLS_KEY_FILE=$(abs_path "${TLS_KEY}")
+export TLS_KEY_NAME=$(basename "${TLS_KEY%.*}")

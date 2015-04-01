@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Create a new certificate authority root.
+# We use 4096-bit RSA because MacOS does not yet support EC keys!
+
+. "$(cd "$(dirname "$0")"; pwd)"/init_env
+
+docker run --rm -t -i \
+    $(vol_caroot rw) \
+    sojournlabs/caroot create
+
+docker run --rm -t -i \
+    $(vol_caroot rw) \
+    sojournlabs/caroot create_code_signing

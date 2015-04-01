@@ -16,3 +16,9 @@
 [submodule "squashfs_tools_docker"]
 	path = squashfs_tools_docker
 	url = https://github.com/SojournLabs/squashfs_tools_docker.git
+[submodule "confluence"]
+	path = confluence
+	url = https://github.com/SojournLabs/confluence
+[submodule "ambassador"]
+	path = ambassador
+	url = https://github.com/SojournLabs/ambassador.git

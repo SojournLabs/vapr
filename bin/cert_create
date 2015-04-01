@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+# Create a certificate and sign it.
+#
+# Usage:
+#    $0 [HOSTNAMES=hostname1,hostname2,...] [HOST_IPS=hostip1,hostip2,...] type certificate_name
+# where type is one of user, client, peer, and server.
+#
+# We use 4096-bit RSA because MacOS does not yet support EC keys!
+. "$(cd "$(dirname "$0")"; pwd)"/init_env
+
+# Extract environment variables to pass to container.
+ENV_LIST=
+for item in "$@"; do
+    if [ "${item}" != "${item/=/}" ]; then
+        ENV_LIST+="--env $(printf '%q' "${item}")"
+        shift
+    else
+        break
+    fi
+done
+
+case "$1" in
+    user|client|peer|server)
+        ;;
+    *)
+        echo "Unknown certificate type."
+        exit 1
+        ;;
+esac
+
+CERT_TYPE="$1"
+CERT_NAME="$2"
+shift 2
+
+eval docker run --rm -t -i \
+    $ENV_LIST \
+    $(vol_caroot rw) \
+    sojournlabs/caroot create_cert_with_extension ssl_${CERT_TYPE} "${CERT_NAME}".${CERT_TYPE} "$@"
