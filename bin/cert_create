@@ -12,7 +12,7 @@
 ENV_LIST=
 for item in "$@"; do
     if [ "${item}" != "${item/=/}" ]; then
-        ENV_LIST+="--env $(printf '%q' "${item}")"
+        ENV_LIST+="--env $(printf '%q' "${item}") "
         shift
     else
         break
