@@ -1,0 +1,16 @@
+[Unit]
+Description=Ambassador connecting to bootproxy to bootserver.
+After=docker.service
+After=bootserver_ambassador.service
+Requires=bootserver_ambassador.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill bootserver_emissary_for_%i
+ExecStartPre=-/usr/bin/docker rm bootserver_emissary_for_%i
+ExecStartPre=-/usr/bin/docker pull busybox
+ExecStart=/usr/bin/docker run --env ETCD=172.17.42.1:4001 --rm --name bootserver_emissary_for_%i -v /var/run/docker.sock:/var/run/docker.sock -v /home/core/certs:/vapr/certstore:ro -v /home/core/keys/${HOSTNAME}.client.key:/vapr/keys/${HOSTNAME}.client.key:ro sojournlabs/ambassador client bootserver
+ExecStop=/usr/bin/docker stop bootserver_emissary_for_%i
+
+[X-Fleet]

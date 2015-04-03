@@ -1,0 +1,17 @@
+[Unit]
+Description=Bootserver ambassador
+After=docker.service
+After=bootserver.service
+Requires=bootserver.service
+
+[Service]
+EnvironmentFile=/etc/environment
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill bootserver_ambassador_server
+ExecStartPre=-/usr/bin/docker rm bootserver_ambassador_server
+ExecStartPre=-/usr/bin/docker pull busybox
+ExecStart=/usr/bin/docker run -p 100 --rm --name bootserver_ambassador_server --env ETCD=172.17.42.1:4001 -v /var/run/docker.sock:/var/run/docker.sock -v /home/core/certs:/vapr/certstore:ro -v /home/core/keys/${HOSTNAME}.server.key:/vapr/keys/${HOSTNAME}.server.key:ro sojournlabs/ambassador server bootserver ${NETWORK_IP}
+ExecStop=/usr/bin/docker stop bootserver_ambassador_server
+
+[X-Fleet]
+MachineOf=bootserver.service
