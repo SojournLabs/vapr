@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# Runs the contents of a .tar.gz file created by busyboxer.
+#
+# Usage: busyboxed command arg1 arg2 ...
+docker run -t -i --rm -v `pwd`:/vapr/build:ro sojournlabs/busyboxed "$@"

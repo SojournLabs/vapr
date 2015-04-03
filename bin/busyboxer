@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+# Creates a .tar.gz file of command_name from package package_name (from Debian).
+# These .tar.gz files contain an executable and its dependencies. They can be unpackaged
+# manually or used using busyboxed.
+#
+# Usage: busyboxer command_name [package_name]
+docker run -t -i --rm -v `pwd`:/vapr/build sojournlabs/busyboxer "$@"
