@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+# Create a CoreOS image with some changes.
+# Usage:
+#     recore role [output_dir]
+# Expects an untouched image to modify in image_dir
+
+# PLATFORM=metal|virtual
+
+export TLS_KEY="${TLS_KEY-codesign}"
+. "$(cd "$(dirname "$0")"; pwd)"/init_env
+
+usage() {
+    echo "Usage: $0 [options] [role [img_dir [output_dir]]]"
+    echo "options (defaults listed first):"
+    echo "  * PLATFORM=metal|virtual"
+    echo "  * PARANOID=FALSE|TRUE"
+    
+    echo "img_dir contains coreos_production_pxe_image.cpio.gz"
+    echo "role is one of bootserver and node. Default is bootserver."
+}
+
+# Extract environment variables to pass to container.
+ENV_LIST=
+for item in "$@"; do
+    if [ "${item}" != "${item/=/}" ]; then
+        ENV_LIST+="--env $(printf '%q' "${item}") "
+        shift
+    else
+        break
+    fi
+done
+
+ROLE="${1-bootserver}"
+
+if [ -d ipxe_server/base_images ]; then
+    IMG_DIR="${2-ipxe_server/base_images}"
+else
+    IMG_DIR="${2-.}"
+fi
+
+if [ -d ipxe_server/images ]; then
+    OUTPUT_DIR="${3-ipxe_server/images}"
+else
+    OUTPUT_DIR="${3-.}"
+fi
+
+[ ! -d "${IMG_DIR}" ] && echo ${IMG_DIR} does not exist. && exit 1
+[ ! -d "${OUTPUT_DIR}" ] && echo ${OUTPUT_DIR} does not exist. && exit 1
+[ ! -f "${IMG_DIR}"/coreos_production_pxe_image.cpio.gz ] && echo coreos_production_pxe_image.cpio.gz not found in $(abs_path "${IMG_DIR}"). && exit 1
+shift 2
+
+eval docker run ${ENV_LIST} --env ROLE="${ROLE}" -v "${VAPR_CERTSTORE}":/vapr/certstore:ro -v $(abs_path "${IMG_DIR}"):/vapr/images:ro -v $(abs_path "${OUTPUT_DIR}"):/vapr/build --rm -t -i sojournlabs/recore "$@"
+
+# Sign the image.
+export VAPR_CERTSTORE
+sign_file "${OUTPUT_DIR}"/"${ROLE}".cpio.gz
+
+if [ ! -f "${OUTPUT_DIR}"/"${ROLE}".vmlinuz.sig ]; then
+    sign_file "${OUTPUT_DIR}"/"${ROLE}".vmlinuz
+fi
