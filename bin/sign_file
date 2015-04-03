@@ -3,6 +3,7 @@
 # Usage:
 #     TLS_KEY=path/to/key $0 file_to_sign
 
+TLS_KEY="${TLS_KEY_NAME-codesign}"
 . "$(cd "$(dirname "$0")"; pwd)"/init_env
 
 if [ $# -lt 1 ]; then
@@ -11,8 +12,8 @@ if [ $# -lt 1 ]; then
 fi
 
 docker run --rm -t -i \
-    --env TLS_KEY_NAME=codesign \
+    --env TLS_KEY_NAME="${TLS_KEY_NAME}" \
     -v $(abs_path "$(dirname "${1}")"):/vapr/signing \
     $(vol_certstore) \
-    $(vol_key codesign) \
+    $(vol_key $(basename "${TLS_KEY}")) \
     sojournlabs/caroot sign "$(basename "${1}")"
