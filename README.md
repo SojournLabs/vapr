@@ -7,13 +7,6 @@ Run `git submodule init` to pull the files you'll need to get started. Note that
 
 For our setup, we do the following:
  1. Set up boot server certificates.
-    1. Set up a root certificate authority using `certs/ca_create`.
-    2. Set up a boot client certificate using `certs/new_client`.
-    3. Set up a boot server certificate using `certs/new_server`.
  2. Set up the iPXE boot client disk image.
-    1. Put the boot client certificate files from step 1.2 above into the `netboot/config` directory.
-    2. Configure `netboot/config/bootscript.ipxe`.
-    3. Install our own root certificate authority certificate (step 1.1) into `netboot/config/cacert.pem`.
-    3. Run the `netboot/build_ipxe` to generate the disk images.
-    4. Write the relevant disk image from `netboot/build` to bootable media.
- 3. Set up an iPXE boot server. (TODO)
+ 3. Set up a CoreOS disk image and distribute it.
+ 4. Boot using the iPXE boot client.
