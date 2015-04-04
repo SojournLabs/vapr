@@ -2,7 +2,9 @@
 Description=Bootserver ambassador
 After=docker.service
 After=bootserver.service
+After=etcd.service
 Requires=bootserver.service
+Requires=etcd.service
 
 [Service]
 EnvironmentFile=/etc/environment

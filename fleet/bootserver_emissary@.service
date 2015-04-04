@@ -2,7 +2,9 @@
 Description=Ambassador connecting to bootproxy to bootserver.
 After=docker.service
 After=bootserver_ambassador.service
+After=etcd.service
 Requires=bootserver_ambassador.service
+Requires=etcd.service
 
 [Service]
 EnvironmentFile=/etc/environment
