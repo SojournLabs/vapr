@@ -62,4 +62,4 @@ else
     export TLS_KEY_FILE=$(abs_path "${VAPR_KEYSTORE}"/"${TLS_KEY}".key)
 fi
 
-export TLS_KEY_NAME=$(basename "${TLS_KEY%.*}")
+export TLS_KEY_NAME=$(basename "${TLS_KEY%.key}")

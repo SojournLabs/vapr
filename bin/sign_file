@@ -3,7 +3,7 @@
 # Usage:
 #     TLS_KEY=path/to/key $0 file_to_sign
 
-TLS_KEY="${TLS_KEY_NAME-codesign}"
+TLS_KEY="${TLS_KEY-codesign}"
 . "$(cd "$(dirname "$0")"; pwd)"/init_env
 
 if [ $# -lt 1 ]; then

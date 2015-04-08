@@ -14,7 +14,7 @@
 # certificates, including the root CA at ca.crt. These are set as part of vapr
 # (https://github.com/SojournLabs/vapr), although you can set them manually.
 
-TLS_KEY="${TLS_KEY_NAME-ipxeclient}"
+TLS_KEY="${TLS_KEY-ipxe.client}"
 . "$(cd "$(dirname "$0")"; pwd)"/init_env
 
 check_key_file_paired
