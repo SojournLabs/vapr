@@ -9,9 +9,8 @@ EnvironmentFile=/etc/environment
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill proxyserver
 ExecStartPre=-/usr/bin/docker rm proxyserver
-ExecStartPre=-/usr/bin/docker pull nginx
-ExecStart=/usr/bin/docker run -p 443:443 --rm -v /home/core/certs/user_ca.crt:/etc/nginx/user_ca.crt:ro -v /home/core/certs/confluence.server.crt:/etc/nginx/confluence.server.crt:ro -v /home/core/keys/confluence.server.key:/etc/nginx/confluence.server.key:ro -v /home/core/proxy:/etc/nginx/conf.d:ro --name %p --link proxyserver-emissary-confluence:confluence nginx
-ExecStop=/usr/bin/docker stop bootproxy
+ExecStart=/usr/bin/docker run -p 443:443 --rm -v /home/core/certs/ca.crt:/etc/nginx/ca.crt:ro -v /home/core/certs/confluence.server.crt:/etc/nginx/confluence.server.crt:ro -v /home/core/keys/confluence.server.key:/etc/nginx/confluence.server.key:ro -v /home/core/proxy:/etc/nginx/conf.d:ro --name %p --link proxyserver-emissary-confluence:confluence nginx
+ExecStop=/usr/bin/docker stop proxyserver
 
 [X-Fleet]
 MachineOf=proxyserver-emissary-confluence@%i.service

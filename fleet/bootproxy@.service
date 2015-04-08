@@ -9,7 +9,6 @@ EnvironmentFile=/etc/environment
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill %p
 ExecStartPre=-/usr/bin/docker rm %p
-ExecStartPre=-/usr/bin/docker pull busybox
 ExecStart=/usr/bin/docker run -p 4747:443 -p 9090:80 --rm -v /home/core/certs/${HOSTNAME}.server.crt:/vapr/certstore/ipxeserver.server.crt:ro -v /home/core/keys/${HOSTNAME}.server.key:/vapr/keys/ipxeserver.server.key:ro -v /home/core/ipxe_server/boot_users.htpasswd:/vapr/boot_users --name bootproxy --link bootproxy-emissary-bootserver:bootserver sojournlabs/boot_proxy
 ExecStop=/usr/bin/docker stop %p
 
