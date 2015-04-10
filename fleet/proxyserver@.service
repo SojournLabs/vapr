@@ -3,15 +3,19 @@ Description=Boot proxy exposing a vapr bootserver to the Internet.
 After=docker.service
 After=proxyserver-emissary-confluence@%i.service
 Requires=proxyserver-emissary-confluence@%i.service
+After=proxyserver-emissary-alfresco@%i.service
+Requires=proxyserver-emissary-alfresco@%i.service
+
 
 [Service]
 EnvironmentFile=/etc/environment
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill proxyserver
 ExecStartPre=-/usr/bin/docker rm proxyserver
-ExecStart=/usr/bin/docker run -p 443:443 --rm -v /home/core/certs/ca.crt:/etc/nginx/ca.crt:ro -v /home/core/certs/confluence.server.crt:/etc/nginx/confluence.server.crt:ro -v /home/core/keys/confluence.server.key:/etc/nginx/confluence.server.key:ro -v /home/core/proxy:/etc/nginx/conf.d:ro --name %p --link proxyserver-emissary-confluence:confluence nginx
+ExecStart=/usr/bin/docker run -p 443:443 --rm -v /home/core/certs/ca.crt:/etc/nginx/ca.crt:ro -v /home/core/certs/proxyserver.server.crt:/etc/nginx/proxyserver.server.crt:ro -v /home/core/keys/proxyserver.server.key:/etc/nginx/proxyserver.server.key:ro -v /home/core/proxy:/etc/nginx/conf.d:ro --name %p --link proxyserver-emissary-confluence:confluence --link proxyserver-emissary-alfresco:alfresco nginx
 ExecStop=/usr/bin/docker stop proxyserver
 
 [X-Fleet]
 MachineOf=proxyserver-emissary-confluence@%i.service
+MachineOf=proxyserver-emissary-alfresco@%i.service
 Conflicts=proxyserver@*.service
