@@ -1,0 +1,19 @@
+[Unit]
+Description=Alfresco
+After=docker.service
+Before=alfresco-ambassador@1.service
+Requires=alfresco-ambassador@1.service
+After=alfresco-emissary-postgres@1.service
+Requires=alfresco-emissary-postgres@1.service
+
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill %p
+ExecStartPre=-/usr/bin/docker rm %p
+ExecStart=/usr/bin/docker run --expose 8080 --rm --name alfresco  --link alfresco-emissary-postgres:postgres --volumes-from data_alfresco sojournlabs/alfresco bash -c '/opt/alfresco/alfresco.sh start; while cat /opt/alfresco/tomcat/temp/catalina.pid > /dev/null; do sleep 1; done'
+ExecStop=/usr/bin/docker exec %p /opt/alfresco/alfresco.sh stop
+
+[X-Fleet]
+MachineOf=alfresco-ambassador@1.service
+MachineOf=alfresco-emissary-postgres@1.service
