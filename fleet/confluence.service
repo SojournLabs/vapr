@@ -11,7 +11,7 @@ Requires=confluence-emissary-postgres@1.service
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill %p
 ExecStartPre=-/usr/bin/docker rm %p
-ExecStart=/usr/bin/docker run --expose 8090 --rm --name confluence --link confluence-emissary-postgres:postgres --volumes-from data_confluence sojournlabs/confluence /var/confluence/install/bin/start-confluence.sh -fg
+ExecStart=/usr/bin/docker run --expose 8090 --rm --name confluence --link confluence-emissary-postgres:postgres -v /etc/localtime:/etc/localtime:ro --volumes-from data_confluence sojournlabs/confluence /var/confluence/install/bin/start-confluence.sh -fg
 ExecStop=/usr/bin/docker stop %p
 
 [X-Fleet]
