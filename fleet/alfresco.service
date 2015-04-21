@@ -17,3 +17,4 @@ ExecStop=/usr/bin/docker exec %p /opt/alfresco/alfresco.sh stop
 [X-Fleet]
 MachineOf=alfresco-ambassador@1.service
 MachineOf=alfresco-emissary-postgres@1.service
+MachineMetadata=alfresco=true

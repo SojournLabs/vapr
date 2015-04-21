@@ -17,3 +17,4 @@ ExecStop=/usr/bin/docker stop %p
 [X-Fleet]
 MachineOf=confluence-ambassador@1.service
 MachineOf=confluence-emissary-postgres@1.service
+MachineMetadata=confluence=true
