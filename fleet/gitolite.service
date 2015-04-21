@@ -1,0 +1,14 @@
+[Unit]
+Description=Confluence
+After=docker.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill %p
+ExecStartPre=-/usr/bin/docker rm %p
+ExecStartPre=-/usr/bin/docker run --rm --name gitolite --volumes-from data_gitolite busybox chown 102:103 /home/git
+ExecStart=/usr/bin/docker run --expose 22 -p 99:22 --rm --name gitolite -v /etc/localtime:/etc/localtime:ro --volumes-from data_gitolite sojournlabs/gitolite bash -c "service ssh start; while cat /var/run/sshd.pid > /dev/null; do sleep 1; done"
+ExecStop=/usr/bin/docker exec gitolite service ssh stop
+
+[X-Fleet]
+MachineMetadata=gitolite=true
