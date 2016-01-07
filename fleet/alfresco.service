@@ -11,7 +11,7 @@ Requires=alfresco-emissary-postgres@1.service
 TimeoutStartSec=0
 ExecStartPre=-/usr/bin/docker kill %p
 ExecStartPre=-/usr/bin/docker rm %p
-ExecStart=/usr/bin/docker run --expose 8080 --rm --name alfresco  --link alfresco-emissary-postgres:postgres --volumes-from data_alfresco sojournlabs/alfresco bash -c '/opt/alfresco/alfresco.sh start; while cat /opt/alfresco/tomcat/temp/catalina.pid > /dev/null; do sleep 1; done'
+ExecStart=/usr/bin/docker run --expose 8080 -p 7070:8081 --rm --name alfresco  --link alfresco-emissary-postgres:postgres --volumes-from data_alfresco sojournlabs/alfresco bash -c '/opt/alfresco/alfresco.sh start; while cat /opt/alfresco/tomcat/temp/catalina.pid > /dev/null; do sleep 1; done'
 ExecStop=/usr/bin/docker exec %p /opt/alfresco/alfresco.sh stop
 
 [X-Fleet]
